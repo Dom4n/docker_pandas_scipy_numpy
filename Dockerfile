@@ -1,13 +1,8 @@
-FROM python:3.7-alpine
+FROM alpine:3.8
 
-ENV PYTHONUNBUFFERED 1
-
-WORKDIR /app
-COPY ./requirements.txt ./
-
-RUN apk add --no-cache python3-dev libstdc++ && \
-    apk add --no-cache --update-cache gcc gfortran build-base wget freetype-dev libpng-dev openblas-dev &&\
-    apk add --no-cache --virtual .build-deps g++ && \
-    ln -s /usr/include/locale.h /usr/include/xlocale.h && \
-    pip install --no-cache-dir -r /app/requirements.txt && \
-    apk del .build-deps
+RUN apk add py3-numpy py3-scipy && \
+    apk add --no-cache --virtual build-deps musl-dev gcc g++ py-numpy-dev && \
+    ln -s /usr/bin/python3 /usr/bin/python && \
+    ln -s /usr/bin/pip3 /usr/bin/pip && \
+    pip install --no-cache-dir pandas && \
+    apk del build-deps
